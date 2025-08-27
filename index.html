@@ -310,9 +310,24 @@
 <script src="https://unpkg.com/@popperjs/core@2"></script>
 <script src="https://unpkg.com/tippy.js@6"></script>
 <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/dist/tippy.css"/>
-
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 <script>
-document.addEventListener('DOMContentLoaded', function() {
+  // 1️⃣ Configuration Firebase
+  const firebaseConfig = {
+    apiKey: "AIzaSyDfg6LOrMZqGhfW3Y8l-PHvTLuik6p7EBs",
+    authDomain: "coiffeur-3cdfa.firebaseapp.com",
+    projectId: "coiffeur-3cdfa",
+    storageBucket: "coiffeur-3cdfa.firebasestorage.app",
+    messagingSenderId: "266646115687",
+    appId: "1:266646115687:web:7eb5d0b3569ea2b53c0bc2"
+    
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+
+  // 2️⃣ Initialisation du calendrier
   const prestationDurations = {
     "Coupe Homme": 30,
     "Coupe Femme": 45,
@@ -323,11 +338,8 @@ document.addEventListener('DOMContentLoaded', function() {
     "Coiffure Mariage": 90
   };
 
-  // Récupérer les réservations depuis localStorage ou initialiser un tableau vide
-  let reservations = JSON.parse(localStorage.getItem('reservations')) || [];
-
-  var calendarEl = document.getElementById('calendar');
-  var calendar = new FullCalendar.Calendar(calendarEl, {
+  const calendarEl = document.getElementById('calendar');
+  const calendar = new FullCalendar.Calendar(calendarEl, {
     initialView: 'timeGridDay',
     slotMinTime: "09:00:00",
     slotMaxTime: "19:00:00",
@@ -337,36 +349,34 @@ document.addEventListener('DOMContentLoaded', function() {
       center: 'title',
       right: 'timeGridDay,timeGridWeek,dayGridMonth'
     },
-    events: reservations.map(r => ({
-      title: r.title,
-      start: r.start,
-      end: r.end,
-      extendedProps: { details: r.details }
-    })),
     selectable: true,
-    select: function(info) {
+    select: info => {
       document.getElementById('reservationDateTime').value = info.startStr;
     },
-    eventDidMount: function(info) {
-      tippy(info.el, {
-        content: info.event.extendedProps.details,
-        theme: 'light',
-      });
+    eventDidMount: info => {
+      tippy(info.el, { content: info.event.extendedProps.details, theme: 'light' });
       info.el.style.backgroundColor = '#f44336';
       info.el.style.color = '#fff';
     }
   });
   calendar.render();
 
-  function isSlotAvailable(start, end) {
-    return !reservations.some(r => {
-      const rStart = new Date(r.start);
-      const rEnd = new Date(r.end);
-      return (start < rEnd && end > rStart);
+  // 3️⃣ Charger les réservations depuis Firestore en temps réel
+  db.collection("reservations").onSnapshot(snapshot => {
+    calendar.removeAllEvents();
+    snapshot.docs.forEach(doc => {
+      const data = doc.data();
+      calendar.addEvent({
+        title: data.title,
+        start: data.start,
+        end: data.end,
+        extendedProps: { details: data.details }
+      });
     });
-  }
+  });
 
-  document.getElementById('reservationForm').addEventListener('submit', function(e){
+  // 4️⃣ Soumission du formulaire
+  document.getElementById('reservationForm').addEventListener('submit', async e => {
     e.preventDefault();
     const form = e.target;
     const name = form.querySelector('input[type="text"]').value;
@@ -376,32 +386,35 @@ document.addEventListener('DOMContentLoaded', function() {
     const dateTime = form.querySelector('#reservationDateTime').value;
     const message = form.querySelector('textarea').value;
 
-    if (!dateTime) return alert("Veuillez sélectionner une date et heure.");
-    if (!prestation) return alert("Veuillez choisir une prestation.");
+    if (!dateTime || !prestation) return alert("Veuillez remplir tous les champs.");
 
     const start = new Date(dateTime);
     const duration = prestationDurations[prestation];
     const end = new Date(start.getTime() + duration * 60000);
 
-    if (!isSlotAvailable(start, end)) {
-      return alert("Ce créneau chevauche une réservation existante !");
-    }
+    // Vérifier chevauchement
+    const snapshot = await db.collection("reservations").get();
+    const overlap = snapshot.docs.some(doc => {
+      const r = doc.data();
+      const rStart = new Date(r.start);
+      const rEnd = new Date(r.end);
+      return start < rEnd && end > rStart;
+    });
+    if (overlap) return alert("Ce créneau est déjà réservé !");
 
     const details = `Nom: ${name}\nEmail: ${email}\nTel: ${phone}\nPrestation: ${prestation}\nMessage: ${message}`;
 
-    const reservation = { title: prestation, start: start.toISOString(), end: end.toISOString(), details };
-    reservations.push(reservation);
-
-    // Sauvegarder dans localStorage
-    localStorage.setItem('reservations', JSON.stringify(reservations));
-
-    // Ajouter au calendrier
-    calendar.addEvent({ title: prestation, start: start.toISOString(), end: end.toISOString(), extendedProps: { details } });
+    // Ajouter dans Firestore
+    await db.collection("reservations").add({
+      title: prestation,
+      start: start.toISOString(),
+      end: end.toISOString(),
+      details
+    });
 
     alert("Réservation enregistrée avec succès !");
     form.reset();
   });
-});
 </script>
 
 
