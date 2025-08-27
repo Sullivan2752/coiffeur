@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Salon Élégance - Coiffure</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #ffffff;
+      color: #333;
+    }
+    header {
+      background: linear-gradient(90deg, #222, #444);
+      color: #fff;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+    header h1 {
+      margin: 0;
+      font-size: 1.8em;
+      letter-spacing: 1px;
+    }
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 20px;
+      margin: 0;
+      padding: 0;
+    }
+    nav a {
+      text-decoration: none;
+      color: #fff;
+      font-weight: 500;
+      transition: 0.3s;
+    }
+    nav a:hover {
+      color: #f4c542;
+    }
+    .hero {
+      background: url('https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9') center/cover no-repeat;
+      height: 70vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #fff;
+      text-align: center;
+      position: relative;
+    }
+    .hero::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+    }
+    .hero h2 {
+      position: relative;
+      font-size: 3em;
+      padding: 20px;
+      border-radius: 10px;
+      animation: fadeIn 2s ease-in-out;
+    }
+    @keyframes fadeIn {
+      from {opacity: 0; transform: translateY(20px);}
+      to {opacity: 1; transform: translateY(0);}
+    }
+    section {
+      padding: 60px 20px;
+      max-width: 1100px;
+      margin: auto;
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 40px;
+      color: #222;
+      font-size: 2em;
+    }
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 25px;
+    }
+    .card {
+      background: #fff;
+      border-radius: 15px;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+      overflow: hidden;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    }
+    .card img {
+      width: 100%;
+      height: 220px;
+      object-fit: cover;
+    }
+    .card-content {
+      padding: 20px;
+      text-align: center;
+    }
+    .tarifs table {
+      width: 100%;
+      border-collapse: collapse;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .tarifs th, .tarifs td {
+      border: 1px solid #eee;
+      padding: 15px;
+      text-align: left;
+    }
+    .tarifs th {
+      background: #f4c542;
+      color: #222;
+    }
+    form {
+      display: grid;
+      gap: 15px;
+      max-width: 500px;
+      margin: auto;
+      padding: 20px;
+      background: #fff;
+      border-radius: 15px;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+    }
+    input, select, textarea, button {
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 1em;
+    }
+    button {
+      background: #222;
+      color: #fff;
+      cursor: pointer;
+      transition: 0.3s;
+      font-weight: bold;
+    }
+    button:hover {
+      background: #f4c542;
+      color: #222;
+    }
+    .map-container {
+      margin-top: 30px;
+      text-align: center;
+    }
+    iframe {
+      width: 100%;
+      height: 400px;
+      border: 0;
+      border-radius: 15px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .info-contact {
+      margin-top: 25px;
+      text-align: center;
+    }
+    .info-contact p {
+      margin: 8px 0;
+      font-size: 1.1em;
+    }
+    .info-contact a.btn {
+      display: inline-block;
+      margin: 10px;
+      padding: 12px 25px;
+      background: #f4c542;
+      color: #222;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+    .info-contact a.btn:hover {
+      background: #222;
+      color: #fff;
+    }
+    footer {
+      background: #222;
+      color: #fff;
+      text-align: center;
+      padding: 25px;
+      margin-top: 60px;
+      font-size: 0.9em;
+    }
+    @media(max-width: 768px) {
+      header h1 {
+        font-size: 1.4em;
+      }
+      nav ul {
+        flex-direction: column;
+        gap: 10px;
+      }
+      .hero h2 {
+        font-size: 2em;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Salon Élégance</h1>
+    <nav>
+      <ul>
+        <li><a href="#accueil">Accueil</a></li>
+        <li><a href="#coiffures">Coiffures</a></li>
+        <li><a href="#tarifs">Tarifs</a></li>
+        <li><a href="#reservation">Réservation</a></li>
+        <li><a href="#localisation">Localisation</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <section class="hero" id="accueil">
+    <h2>La beauté commence ici ✨</h2>
+  </section>
+
+  <section id="coiffures">
+    <h2>Nos Coiffures</h2>
+    <div class="gallery">
+      <div class="card">
+        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d" alt="Coupe Homme Moderne">
+        <div class="card-content">
+          <h3>Coupe Homme Moderne</h3>
+          <p>Un style tendance et soigné, idéal pour un look professionnel.</p>
+        </div>
+      </div>
+      <div class="card">
+        <img src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f" alt="Coupe Femme Élégante">
+        <div class="card-content">
+          <h3>Coupe Femme Élégante</h3>
+          <p>Des coupes féminines pour révéler toute votre élégance.</p>
+        </div>
+      </div>
+      <div class="card">
+        <img src="https://images.unsplash.com/photo-1526045612212-70caf35c14df" alt="Coloration & Mèches">
+        <div class="card-content">
+          <h3>Coloration & Mèches</h3>
+          <p>Un choix de couleurs éclatantes pour illuminer votre style.</p>
+        </div>
+      </div>
+      <div class="card">
+        <img src="https://images.unsplash.com/photo-1526045478516-99145907023c" alt="Coiffure de Mariage">
+        <div class="card-content">
+          <h3>Coiffure de Mariage</h3>
+          <p>Une coiffure unique et raffinée pour le plus beau jour de votre vie.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="tarifs" class="tarifs">
+    <h2>Nos Tarifs</h2>
+    <table>
+      <tr><th>Prestation</th><th>Prix</th></tr>
+      <tr><td>Coupe Homme</td><td>20€</td></tr>
+      <tr><td>Coupe Femme</td><td>35€</td></tr>
+      <tr><td>Coupe Enfant (-12 ans)</td><td>15€</td></tr>
+      <tr><td>Coloration</td><td>40€</td></tr>
+      <tr><td>Mèches</td><td>50€</td></tr>
+      <tr><td>Brushing</td><td>25€</td></tr>
+      <tr><td>Coiffure Mariage</td><td>80€</td></tr>
+    </table>
+  </section>
+
+  <section id="reservation">
+  <h2>Réservez Votre Rendez-vous</h2>
+  <div style="display: flex; gap: 30px; flex-wrap: wrap; justify-content: center;">
+    <!-- Formulaire -->
+    <form id="reservationForm" style="flex: 1; min-width: 300px;">
+      <input type="text" placeholder="Votre Nom" required>
+      <input type="email" placeholder="Votre Email" required>
+      <input type="tel" placeholder="Votre Téléphone" required>
+      <select id="prestationSelect" required>
+        <option value="">Choisir une prestation</option>
+        <option value="Coupe Homme">Coupe Homme</option>
+        <option value="Coupe Femme">Coupe Femme</option>
+        <option value="Coupe Enfant">Coupe Enfant</option>
+        <option value="Coloration">Coloration</option>
+        <option value="Mèches">Mèches</option>
+        <option value="Brushing">Brushing</option>
+        <option value="Coiffure Mariage">Coiffure Mariage</option>
+      </select>
+      <input type="datetime-local" id="reservationDateTime" required>
+      <textarea placeholder="Message (facultatif)"></textarea>
+      <button type="submit">Envoyer</button>
+    </form>
+
+    <!-- Agenda interactif -->
+    <div id="calendar" style="flex: 1; min-width: 300px;"></div>
+  </div>
+</section>
+
+<!-- FullCalendar et Tippy.js -->
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.7/index.global.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.7/index.global.min.js"></script>
+<script src="https://unpkg.com/@popperjs/core@2"></script>
+<script src="https://unpkg.com/tippy.js@6"></script>
+<link rel="stylesheet" href="https://unpkg.com/tippy.js@6/dist/tippy.css"/>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const prestationDurations = {
+    "Coupe Homme": 30,
+    "Coupe Femme": 45,
+    "Coupe Enfant": 30,
+    "Coloration": 60,
+    "Mèches": 60,
+    "Brushing": 30,
+    "Coiffure Mariage": 90
+  };
+
+  // Récupérer les réservations depuis localStorage ou initialiser un tableau vide
+  let reservations = JSON.parse(localStorage.getItem('reservations')) || [];
+
+  var calendarEl = document.getElementById('calendar');
+  var calendar = new FullCalendar.Calendar(calendarEl, {
+    initialView: 'timeGridDay',
+    slotMinTime: "09:00:00",
+    slotMaxTime: "19:00:00",
+    allDaySlot: false,
+    headerToolbar: {
+      left: 'prev,next today',
+      center: 'title',
+      right: 'timeGridDay,timeGridWeek,dayGridMonth'
+    },
+    events: reservations.map(r => ({
+      title: r.title,
+      start: r.start,
+      end: r.end,
+      extendedProps: { details: r.details }
+    })),
+    selectable: true,
+    select: function(info) {
+      document.getElementById('reservationDateTime').value = info.startStr;
+    },
+    eventDidMount: function(info) {
+      tippy(info.el, {
+        content: info.event.extendedProps.details,
+        theme: 'light',
+      });
+      info.el.style.backgroundColor = '#f44336';
+      info.el.style.color = '#fff';
+    }
+  });
+  calendar.render();
+
+  function isSlotAvailable(start, end) {
+    return !reservations.some(r => {
+      const rStart = new Date(r.start);
+      const rEnd = new Date(r.end);
+      return (start < rEnd && end > rStart);
+    });
+  }
+
+  document.getElementById('reservationForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    const form = e.target;
+    const name = form.querySelector('input[type="text"]').value;
+    const email = form.querySelector('input[type="email"]').value;
+    const phone = form.querySelector('input[type="tel"]').value;
+    const prestation = form.querySelector('#prestationSelect').value;
+    const dateTime = form.querySelector('#reservationDateTime').value;
+    const message = form.querySelector('textarea').value;
+
+    if (!dateTime) return alert("Veuillez sélectionner une date et heure.");
+    if (!prestation) return alert("Veuillez choisir une prestation.");
+
+    const start = new Date(dateTime);
+    const duration = prestationDurations[prestation];
+    const end = new Date(start.getTime() + duration * 60000);
+
+    if (!isSlotAvailable(start, end)) {
+      return alert("Ce créneau chevauche une réservation existante !");
+    }
+
+    const details = `Nom: ${name}\nEmail: ${email}\nTel: ${phone}\nPrestation: ${prestation}\nMessage: ${message}`;
+
+    const reservation = { title: prestation, start: start.toISOString(), end: end.toISOString(), details };
+    reservations.push(reservation);
+
+    // Sauvegarder dans localStorage
+    localStorage.setItem('reservations', JSON.stringify(reservations));
+
+    // Ajouter au calendrier
+    calendar.addEvent({ title: prestation, start: start.toISOString(), end: end.toISOString(), extendedProps: { details } });
+
+    alert("Réservation enregistrée avec succès !");
+    form.reset();
+  });
+});
+</script>
+
+
+
+
+</script>
+  <section id="localisation">
+    <h2>Nous Trouver</h2>
+    <div class="map-container">
+      <iframe
+        src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d10556.0!2d2.6006!3d50.4189!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sfr!2sfr!4v1693150000000"
+        allowfullscreen=""
+        loading="lazy"
+      ></iframe>
+      <div class="info-contact">
+        <p><strong>Horaires :</strong><br>
+          Lun - Ven : 9h - 19h<br>
+          Sam : 9h - 17h<br>
+          Dimanche : Fermé
+        </p>
+        <p><strong>Adresse :</strong> 10 rue des Pensées, 62150 Fresnicourt-le-Dolmen, France</p>
+        <p><strong>Téléphone :</strong> 03 21 00 00 00</p>
+        <a href="https://www.google.com/maps/dir/?api=1&destination=10+rue+des+Pens%C3%A9es,+62150+Fresnicourt-le-Dolmen" target="_blank" class="btn">Itinéraire</a>
+        <a href="tel:+33321000000" class="btn">📞 Appeler</a>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p>&copy; 2025 Salon Élégance | Tous droits réservés</p>
+  </footer>
+
+  <script>
+    // Confirmation envoi formulaire
+    document.querySelector("form").addEventListener("submit", function(e){
+      e.preventDefault();
+      alert("Merci pour votre réservation ! Nous vous contacterons bientôt.");
+    });
+  </script>
+
+</body>
+</html>
+
+
+
