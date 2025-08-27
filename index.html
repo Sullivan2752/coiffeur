@@ -211,8 +211,9 @@
 </head>
 <body>
 
-  <header>
-    <h1>Salon Élégance</h1>
+  <header style="display:flex;justify-content:space-between;align-items:center;padding:15px 30px;position:sticky;top:0;background:linear-gradient(90deg,#222,#444);z-index:1000;">
+  <h1 style="color:#fff;margin:0;">Salon Élégance</h1>
+  
     <nav>
       <ul>
         <li><a href="#accueil">Accueil</a></li>
@@ -222,8 +223,23 @@
         <li><a href="#localisation">Localisation</a></li>
       </ul>
     </nav>
+    <div style="display:flex;align-items:center;gap:10px;">
+    <img id="userIcon" src="https://cdn-icons-png.flaticon.com/512/1077/1077114.png" alt="User" style="width:35px;cursor:pointer;">
+    <button id="logoutButton" style="display:none;padding:8px 15px;border:none;border-radius:8px;background:#f4c542;color:#222;cursor:pointer;">Déconnexion</button>
+  </div>
   </header>
-
+  <div id="authModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);justify-content:center;align-items:center;z-index:10000;">
+  <div style="background:#fff;padding:30px;border-radius:15px;max-width:400px;width:90%;position:relative;">
+    <span id="closeModal" style="position:absolute;top:10px;right:15px;font-size:20px;cursor:pointer;">&times;</span>
+    <h2 id="modalTitle">Connexion</h2>
+    <form id="authForm" style="display:flex;flex-direction:column;gap:15px;">
+      <input type="email" id="authEmail" placeholder="Email" required>
+      <input type="password" id="authPassword" placeholder="Mot de passe" required>
+      <button type="submit" id="authButton">Se connecter</button>
+      <p id="toggleAuth" style="cursor:pointer;color:#f4c542;text-align:center;margin-top:5px;">Pas encore de compte ? S’inscrire</p>
+    </form>
+  </div>
+</div>
   <section class="hero" id="accueil">
     <h2>La beauté commence ici ✨</h2>
   </section>
@@ -415,6 +431,67 @@
     alert("Réservation enregistrée avec succès !");
     form.reset();
   });
+  const auth = firebase.auth();
+
+// 2️⃣ Ouvrir/fermer le modal
+const userIcon = document.getElementById("userIcon");
+const authModal = document.getElementById("authModal");
+const closeModal = document.getElementById("closeModal");
+const modalTitle = document.getElementById("modalTitle");
+const authButton = document.getElementById("authButton");
+const toggleAuth = document.getElementById("toggleAuth");
+const authForm = document.getElementById("authForm");
+
+let isLogin = true; // état actuel: connexion ou inscription
+
+userIcon.addEventListener("click", () => { authModal.style.display = "flex"; });
+closeModal.addEventListener("click", () => { authModal.style.display = "none"; });
+
+// 3️⃣ Basculer connexion / inscription
+toggleAuth.addEventListener("click", () => {
+  isLogin = !isLogin;
+  if (isLogin) {
+    modalTitle.innerText = "Connexion";
+    authButton.innerText = "Se connecter";
+    toggleAuth.innerText = "Pas encore de compte ? S’inscrire";
+  } else {
+    modalTitle.innerText = "Inscription";
+    authButton.innerText = "S’inscrire";
+    toggleAuth.innerText = "Déjà un compte ? Se connecter";
+  }
+});
+
+// 4️⃣ Gestion formulaire
+authForm.addEventListener("submit", async e => {
+  e.preventDefault();
+  const email = document.getElementById("authEmail").value;
+  const password = document.getElementById("authPassword").value;
+
+  try {
+    if (isLogin) {
+      await auth.signInWithEmailAndPassword(email, password);
+      alert("Connecté avec succès !");
+    } else {
+      await auth.createUserWithEmailAndPassword(email, password);
+      alert("Compte créé et connecté !");
+    }
+    authModal.style.display = "none";
+    authForm.reset();
+  } catch (error) {
+    alert(error.message);
+  }
+});
+
+// 5️⃣ État de l'utilisateur (connecté/déconnecté)
+auth.onAuthStateChanged(user => {
+  if (user) {
+    console.log("Utilisateur connecté :", user.email);
+    userIcon.style.filter = "invert(52%) sepia(100%) saturate(5749%) hue-rotate(358deg) brightness(99%) contrast(103%)"; // icône dorée si connecté
+  } else {
+    console.log("Utilisateur déconnecté");
+    userIcon.style.filter = ""; // icône normale
+  }
+});
 </script>
 
 
