@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Connexion - Salon Élégance</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f9f9f9;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    form {
+      background: #fff;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 400px;
+      display: grid;
+      gap: 15px;
+    }
+    input, button {
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 1em;
+    }
+    button {
+      background: #222;
+      color: #fff;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    button:hover {
+      background: #f4c542;
+      color: #222;
+    }
+    .link {
+      text-align: center;
+      margin-top: 10px;
+    }
+    .link a {
+      color: #222;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    .link a:hover {
+      color: #f4c542;
+    }
+  </style>
+</head>
+<body>
+  <form id="loginForm">
+    <h2 style="text-align:center;">Connexion</h2>
+    <input type="email" id="email" placeholder="Email" required>
+    <input type="password" id="password" placeholder="Mot de passe" required>
+    <button type="submit">Se connecter</button>
+    <div class="link">
+      <p>Pas encore de compte ? <a href="inscription.html">S'inscrire</a></p>
+    </div>
+  </form>
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+
+  <script>
+    // 1️⃣ Configuration Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyDfg6LOrMZqGhfW3Y8l-PHvTLuik6p7EBs",
+      authDomain: "coiffeur-3cdfa.firebaseapp.com",
+      projectId: "coiffeur-3cdfa",
+      storageBucket: "coiffeur-3cdfa.firebasestorage.app",
+      messagingSenderId: "266646115687",
+      appId: "1:266646115687:web:7eb5d0b3569ea2b53c0bc2"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+
+    // 2️⃣ Gestion du formulaire de connexion
+    document.getElementById("loginForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+
+      try {
+        await auth.signInWithEmailAndPassword(email, password);
+        alert("✅ Connexion réussie !");
+        window.location.href = "index.html"; // Redirection vers la page principale
+      } catch (error) {
+        alert("❌ Erreur : " + error.message);
+      }
+    });
+  </script>
+</body>
+</html>

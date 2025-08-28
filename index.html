@@ -43,6 +43,18 @@
     nav a:hover {
       color: #f4c542;
     }
+    nav a.btn-inscription {
+    background: #f4c542;
+    color: #222;
+    padding: 8px 15px;
+    border-radius: 8px;
+    font-weight: bold;
+    }
+  nav a.btn-inscription:hover {
+  background: #fff;
+  color: #222;
+  }
+
     .hero {
       background: url('https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9') center/cover no-repeat;
       height: 70vh;
@@ -215,10 +227,11 @@
     <h1>Salon Élégance</h1>
     <nav>
       <ul>
-
+        <li><a href="#coiffures">coiffures</a></li>
         <li><a href="#tarifs">Tarifs</a></li>
         <li><a href="#reservation">Réservation</a></li>
         <li><a href="#localisation">Localisation</a></li>
+         <li><a href="inscription.html" id="authBtn" class="btn-inscription">S'enregistrer</a></li>
         
       </ul>
     </nav>
@@ -313,6 +326,7 @@
 <!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script>
   // 1️⃣ Configuration Firebase
   const firebaseConfig = {
@@ -326,6 +340,28 @@
   };
   firebase.initializeApp(firebaseConfig);
   const db = firebase.firestore();
+  const auth = firebase.auth();
+
+   // 🎯 Vérifie l'état de connexion
+  auth.onAuthStateChanged(user => {
+    const authBtn = document.getElementById("authBtn");
+
+    if (user) {
+      // Si connecté → bouton déconnexion
+      authBtn.textContent = "Se déconnecter";
+      authBtn.href = "#";
+      authBtn.onclick = async () => {
+        await auth.signOut();
+        alert("✅ Déconnecté avec succès !");
+        location.reload(); // Recharge la page
+      };
+    } else {
+      // Si pas connecté → bouton inscription
+      authBtn.textContent = "Se connecter";
+      authBtn.href = "login.html";
+      authBtn.onclick = null;
+    }
+  });
 
   // 2️⃣ Initialisation du calendrier
   const prestationDurations = {
